@@ -1,15 +1,8 @@
-# wd-scraper
+# Workday Scraper
+### A web scraper to fetch grades from Workday Student. 
 
-To install dependencies:
+# Why?
+### Because I was tired of having to reload Workday Student all the time to check my grades.
 
-```bash
-bun install
-```
-
-To run:
-
-```bash
-bun run index.ts
-```
-
-This project was created using `bun init` in bun v1.3.5. [Bun](https://bun.com) is a fast all-in-one JavaScript runtime.
+# How?
+### It's simple: just put your grade-table fetch URL (do some digging using devtools) and your Workday Cookie (also obtainable in devtools) in a .env file, and let it rip...
