@@ -1,5 +1,7 @@
+import { Log, LogLevel } from "sprout-api";
+
 /**
- * Fetches the academic record JSON from Workday.
+ * Fetches the JSON from Workday's private API.
  */
 async function FetchGrades() {
 
@@ -35,8 +37,7 @@ async function FetchGrades() {
 }
 
 /**
- * Parses the Workday JSON to find Fall 2025 grades.
- * Handles dynamic column positions by searching for column labels/properties.
+ * Parses the Workday JSON.
  */
 function ParseGrades(Data: any) {
     
@@ -134,9 +135,20 @@ function ParseGrades(Data: any) {
 }
 
 /**
+ * Logs the results to the Sprout Logging Relay.
+*/
+function LogToSprout(Grades: { course: string, grade: string }[]) {
+
+    Log((process.env as any).SERVICE_ID, LogLevel.Info, `${Grades.length} Grades Fetched`, `${Grades.map(g => `${g.course}: <strong>${g.grade}</strong>`).join("<br>")}` ).catch(() => {})
+
+}
+
+/**
  * Logs the results to a text file using Bun.file.
  */
 async function LogResults(Grades: { course: string, grade: string }[]) {
+
+    LogToSprout(Grades);
 
     const LogFile = "grades_log.txt";
     const Timestamp = new Date().toLocaleString();
@@ -208,13 +220,13 @@ async function main() {
 
     await Run(); // Initial run
 
-    // Schedules periodic runs (every 2 minutes)
+    // Periodic runs
 
-    const IntervalMinutes = 2;
+    const IntervalMinutes = 5;
     setInterval(Run, IntervalMinutes * 60 * 1000);
     
     console.log(`Scraper is running. Updating every ${IntervalMinutes} minutes. Press Ctrl+C to stop.`);
 
 }
 
-main();
+main(); // start
